@@ -1,0 +1,199 @@
+log_level: DEBUG
+log_file: logs/whale_detector.log
+database_file: data/whale_alerts.db
+logging:
+  level: DEBUG
+  file: logs/whale_detector.log
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+asterdex:
+  rate_limit_per_minute: 2000
+  timeout_seconds: 30
+  circuit_breakers:
+    open_interest:
+      failure_threshold: 5
+      timeout_seconds: 30
+      recovery_threshold: 2
+      sliding_window_size: 6
+whale_detection:
+  min_trade_value: 50000
+  confidence_threshold: 0.6
+  priority_bypass_confidence: 0.9
+  max_alerts_per_hour: 10
+  enable_dynamic_symbols: true
+  min_symbols: 5
+  max_symbols: 25
+  update_interval_minutes: 30
+  min_volume_usd: 1000000
+  volatility_bonus: true
+  symbols:
+  - BTCUSDT
+  - ETHUSDT
+  - ASTERUSDT
+  - BNBUSDT
+  - SOLUSDT
+  - DOGEUSDT
+  - XRPUSDT
+  - HYPEUSDT
+  - XPLUSDT
+  - PUMPUSDT
+  - CAKEUSDT
+  - SUIUSDT
+  - STBLUSDT
+  - ENAUSDT
+  - AVAXUSDT
+  - FARTCOINUSDT
+  - ZECUSDT
+  - AIAUSDT
+  - LINKUSDT
+  - COAIUSDT
+  - LYNUSDT
+  - FFUSDT
+  - 1000BONKUSDT
+  - PENGUUSDT
+  - 1000FLOKIUSDT
+  # DEPRECATED: Use alert_router instead (kept for backward compatibility during transition)
+  signal_fusion:
+    enabled: true
+    allow_individual_alerts: true
+    individual_confidence_threshold: 0.5
+    fusion_window_seconds: 120
+    max_fusion_delay_seconds: 120
+    min_confidence_threshold: 0.65
+    require_min_strategies: 2
+    consensus_boost_factor: 0.15
+    tier1_max_per_hour: 5
+    tier2_max_per_hour: 10
+
+  # NEW: AlertRouter configuration (refactored from signal_fusion)
+  alert_router:
+    enabled: true
+    debug_logging: false
+    allow_individual_alerts: true
+    individual_confidence_threshold: 0.5
+    fusion_window_seconds: 120
+    min_fusion_confidence: 0.65
+
+    fusion:
+      debug_logging: false
+      min_strategies_for_fusion: 2
+      consensus_boost_factor: 0.15
+      max_time_difference: 120
+      strategy_weights:
+        VolumeWhaleStrategy: 1.0
+        OrderBookImbalanceStrategy: 1.0
+        PriceMomentumStrategy: 1.0
+        VolatilitySpikeStrategy: 1.0
+        OrderFlowStrategy: 1.0
+        StablecoinDepegStrategy: 1.0
+volume_whale_strategy:
+  enabled: true
+  min_trade_value: 50000
+  volume_multiplier: 2.5
+  lookback_hours: 24
+  confidence_threshold: 0.6
+  use_tiered_thresholds: true
+orderbook_imbalance_strategy:
+  enabled: true
+  min_imbalance_ratio: 2.5
+  min_order_value: 100000
+  imbalance_threshold: 100000
+  confidence_threshold: 0.7
+  lookback_periods: 10
+  use_tiered_thresholds: true
+price_momentum_strategy:
+  enabled: true
+  min_price_change_percent: 0.3
+  momentum_window_seconds: 120
+  min_momentum_value: 5000
+  confidence_threshold: 0.5
+  lookback_periods: 20
+  velocity_threshold: 0.1
+  use_tiered_thresholds: true
+stablecoin_depeg_strategy:
+  enabled: true
+  minor_threshold: 0.3
+  moderate_threshold: 0.5
+  severe_threshold: 1.0
+  critical_threshold: 2.0
+  min_volume_usd: 1000000
+order_flow_strategy:
+  enabled: true
+  min_oi_change_pct: 1.0
+  min_oi_change_abs: 10000
+  min_cvd_change: 10000
+  min_trade_value: 5000
+  confidence_threshold: 0.5
+  short_window_minutes: 5
+  medium_window_minutes: 15
+  long_window_minutes: 60
+  use_tiered_thresholds: true
+volatility_spike_strategy:
+  enabled: true
+  min_spike_threshold: 0.8
+  volume_surge_multiplier: 1.5
+  max_spike_duration: 600
+  confidence_threshold: 0.5
+  aggressiveness: 4
+  min_velocity_threshold: 0.08
+  large_trade_threshold: 10000
+  spread_impact_threshold: 1.2
+  liquidity_shock_threshold: 0.2
+  use_tiered_thresholds: true
+  lookback_periods: 30
+open_interest:
+  enabled: true
+  use_tiered_thresholds: true
+  change_thresholds:
+    1m:
+      moderate: 0.1
+      high: 0.2
+      critical: 0.5
+    5m:
+      moderate: 0.2
+      high: 0.35
+      critical: 0.7
+    15m:
+      moderate: 0.35
+      high: 0.5
+      critical: 1.0
+    1h:
+      moderate: 0.5
+      high: 0.75
+      critical: 1.5
+  absolute_thresholds:
+    moderate: 5000000
+    high: 10000000
+    critical: 25000000
+  divergence_thresholds:
+    correlation_threshold: -0.5
+    min_oi_change: 0.05
+    min_price_change: 0.02
+    min_magnitude: 0.1
+  cap_thresholds:
+    warning: 0.8
+    high: 0.9
+    critical: 0.95
+    at_cap: 0.99
+alert_deduplication:
+  enabled: false
+  dedup_window_minutes: 15
+  max_alerts_per_symbol_hour: 3
+  max_alerts_per_symbol_minute: 1
+  similarity_threshold: 0.85
+  cleanup_interval_minutes: 30
+telegram:
+  chat_id: "${TELEGRAM_CHAT_ID}"
+  admin_users:
+  - 468298295
+  message_format: PREMIUM
+  status_updates: true
+  commands:
+    volatility:
+      scanner_symbol_limit: 20
+      top_results_count: 10
+      detailed_whale_data: true
+      klines_interval: 1m
+      klines_limit: 14
+monitoring:
+  enabled: true
+  port: 8090

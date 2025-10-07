@@ -1,0 +1,17 @@
+# AsterDx Whale Detection Bot - Simplified Dependencies
+# Only essential packages for core functionality
+
+# HTTP client for API requests
+aiohttp>=3.8.0
+
+# YAML configuration parsing
+PyYAML>=6.0
+
+# Enhanced logging and table formatting
+prettytable>=3.0.0
+
+# WebSocket support
+websockets>=11.0.0
+
+# Caching utilities
+cachetools>=5.0.0
