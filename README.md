@@ -42,7 +42,7 @@ This is a **framework**, not a complete solution. Detection strategies are inten
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/aster-whale-hunter.git
+git clone https://github.com/virtexvirtuoso/aster-whale-hunter.git
 cd aster-whale-hunter
 
 # Create virtual environment
@@ -323,8 +323,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/aster-whale-hunter/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/aster-whale-hunter/discussions)
+- **Issues**: [GitHub Issues](https://github.com/virtexvirtuoso/aster-whale-hunter/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/virtexvirtuoso/aster-whale-hunter/discussions)
 - **Telegram**: [@Aster_whale_hunter_bot](https://t.me/Aster_whale_hunter_bot)
 
 ---
